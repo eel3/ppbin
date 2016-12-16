@@ -49,7 +49,7 @@ def format_line(indent, pwords, delim):
     return ''.join((indent, delim.join(pwords), delim, '\n'))
 
 
-def bindump(istream, ostream, opts):
+def ppbin(istream, ostream, opts):
     word_size = opts.word_size
     pwsize = opts.print_size
     pwords = []
@@ -132,15 +132,15 @@ def main():
     retval = 0
 
     if len(files) <= 0:
-        bindump(sys.stdin, ostream, args[0])
+        ppbin(sys.stdin, ostream, args[0])
     else:
         for f in files:
             if f == '-':
-                bindump(sys.stdin, ostream, args[0])
+                ppbin(sys.stdin, ostream, args[0])
             else:
                 try:
                     with open(f, 'rb') as istream:
-                        bindump(istream, ostream, args[0])
+                        ppbin(istream, ostream, args[0])
                 except Exception as e:
                     eprint(e)
                     retval = 1
