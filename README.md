@@ -66,9 +66,11 @@ Example
       0x00100004, 0x61746164, 0x00000000,
     $
     $ # 1-tab indentation.
-    $ # -i 2 --> indent size is 1
+    $ # -i 1 --> indent size is 1
     $ # -t   --> use tab insted of space
     $ ppbin -a 0x -d ', ' -i 1 -l -n 4 -t -w 4 test.bin
             0x46464952, 0x00000024, 0x45564157, 0x20746D66,
             0x00000010, 0x00020001, 0x0000AC44, 0x0002B110,
             0x00100004, 0x61746164, 0x00000000,
+    $
+    $ _
