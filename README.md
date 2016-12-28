@@ -73,4 +73,13 @@ Example
             0x00000010, 0x00020001, 0x0000AC44, 0x0002B110,
             0x00100004, 0x61746164, 0x00000000,
     $
+    $ # -b <header> --> add header
+    $ # -e <footer> --> add footer
+    $ ppbin -a 0x -b 'static const uint32_t test_bin[] = {' -d ', ' -e '};' -i 1 -l -n 4 -t -w 4 test.bin
+    static const uint32_t test_bin[] = {
+            0x46464952, 0x00000024, 0x45564157, 0x20746D66,
+            0x00000010, 0x00020001, 0x0000AC44, 0x0002B110,
+            0x00100004, 0x61746164, 0x00000000,
+    };
+    $
     $ _

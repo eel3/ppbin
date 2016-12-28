@@ -2,7 +2,7 @@
 # encoding: utf-8
 # -*- coding: utf-8 -*-
 # vim:fileencoding=UTF-8
-# @(#) Command line tool to pretty-print binary file. Version 1.0.3.20161218
+# @(#) Command line tool to pretty-print binary file. Version 1.1.0.20161228
 
 # Copyright (c) 2016 eel3
 #
@@ -58,6 +58,9 @@ def ppbin(istream, ostream, opts):
     indent = make_indent(opts.indent_level, opts.use_tab)
     delim = opts.delim
 
+    if opts.begin_of_file is not None:
+        ostream.write(opts.begin_of_file + '\n');
+
     words = istream.read()
     it = (words[i:i+word_size] for i in range(0, len(words), word_size))
     for word in it:
@@ -73,6 +76,9 @@ def ppbin(istream, ostream, opts):
     if len(pwords) > 0:
         ostream.write(format_line(indent, pwords, delim))
 
+    if opts.end_of_file is not None:
+        ostream.write(opts.end_of_file + '\n');
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description=
@@ -82,9 +88,13 @@ def parse_args():
     parser.add_argument('-a', '--add-prefix', metavar='prefix', nargs='?',
                         const='', default='',
                         help='add prefix for each print word')
+    parser.add_argument('-b', '--begin-of-file', metavar='header', nargs='?',
+                        help='add header for each file')
     parser.add_argument('-d', '--delim', metavar='delimiter', nargs='?',
                         const=' ', default=' ',
                         help='delimiter for each words')
+    parser.add_argument('-e', '--end-of-file', metavar='footer', nargs='?',
+                        help='add footer for each file')
     parser.add_argument('-i', '--indent-level', metavar='indent level',
                         nargs='?', type=int, const=0, default=0,
                         help='indent level')
@@ -102,7 +112,7 @@ def parse_args():
     parser.add_argument('-t', '--use-tab', action='store_true',
                         help='indent by tab')
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s 1.0.3')
+                        version='%(prog)s 1.1.0')
     parser.add_argument('-w', '--word-size', nargs='?', type=int, const=1,
                         default=1, choices=[1, 2, 4, 8, 16],
                         help='input word size')
