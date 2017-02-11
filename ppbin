@@ -2,7 +2,7 @@
 # encoding: utf-8
 # -*- coding: utf-8 -*-
 # vim:fileencoding=UTF-8
-# @(#) Command line tool to pretty-print binary file. Version 1.1.0.20161228
+# @(#) Command line tool to pretty-print binary file. Version 1.2.0.20170210
 
 # Copyright (c) 2016 eel3
 #
@@ -106,16 +106,15 @@ def parse_args():
     parser.add_argument('-o', '--output', metavar='file', nargs='?',
                         type=argparse.FileType('w'), const=sys.stdout,
                         default=sys.stdout, help='place output in file')
-    parser.add_argument('-p', '--print-size', nargs='?', type=int,
-                        choices=[1, 2, 4, 8, 16],
-                        help='print word size (must be less or equal to wordsize)')
+    parser.add_argument('-p', '--print-size', metavar='print size', nargs='?',
+                        type=int,
+                        help='print word size (must be less or equal to --word-size)')
     parser.add_argument('-t', '--use-tab', action='store_true',
                         help='indent by tab')
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s 1.1.0')
-    parser.add_argument('-w', '--word-size', nargs='?', type=int, const=1,
-                        default=1, choices=[1, 2, 4, 8, 16],
-                        help='input word size')
+                        version='%(prog)s 1.2.0')
+    parser.add_argument('-w', '--word-size', metavar='word size', nargs='?',
+                        type=int, const=1, default=1, help='input word size')
 
     return parser.parse_known_args()
 
@@ -131,10 +130,20 @@ def main():
         eprint('error: --num-words-in-line must be greater or equal to 1')
         sys.exit(1)
 
+    if args[0].word_size < 1:
+        eprint('error: --word-size must be greater or equal to 1')
+        sys.exit(1)
+
     if args[0].print_size is None:
         args[0].print_size = args[0].word_size
+    if args[0].print_size < 1:
+        eprint('error: --print-size must be greater or equal to 1')
+        sys.exit(1)
     if args[0].print_size > args[0].word_size:
         eprint('error: --print-size must be less or equal to --word-size')
+        sys.exit(1)
+    if (args[0].word_size % args[0].print_size) != 0:
+        eprint('error: --word-size must be divisible by --print-size')
         sys.exit(1)
 
     files = args[0].files
