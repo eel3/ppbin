@@ -2,7 +2,7 @@
 # encoding: utf-8
 # -*- coding: utf-8 -*-
 # vim:fileencoding=UTF-8
-# @(#) Command line tool to pretty-print binary file. Version 1.4.1.20170217
+# @(#) Command line tool to pretty-print binary file. Version 1.5.0.20170217
 
 # Copyright (c) 2016 eel3
 #
@@ -45,8 +45,8 @@ def format_pword(pword, size, prefix):
     return (prefix + '%02X' * size) % struct.unpack('%dB' % size, pword)
 
 
-def format_word(pwords, pdelim):
-    return pdelim.join(pwords)
+def format_word(wprefix, pwords, pdelim):
+    return wprefix + pdelim.join(pwords)
 
 
 def format_line(indent, words, wdelim, rtrim):
@@ -78,7 +78,7 @@ def ppbin(istream, ostream, opts):
             word = word[::-1]
         for i in range(0, word_size, pwsize):
             pwords.append(format_pword(word[i:i+pwsize], pwsize, prefix))
-        words.append(format_word(pwords, opts.delim))
+        words.append(format_word(opts.word_prefix, pwords, opts.delim))
         del pwords[:]
         if len(words) >= opts.num_words_in_line:
             ostream.write(format_line(indent, words, wdelim, rtrim))
@@ -98,6 +98,9 @@ def parse_args():
     parser.add_argument('-a', '--add-prefix', metavar='prefix', nargs='?',
                         const='', default='',
                         help='add prefix for each print-words')
+    parser.add_argument('-A', '--word-prefix', metavar='prefix', nargs='?',
+                        const='', default='',
+                        help='add prefix for each words')
     parser.add_argument('-b', '--begin-of-file', metavar='header', nargs='?',
                         help='add header for each files')
     parser.add_argument('-d', '--delim', metavar='delimiter', nargs='?',
@@ -126,7 +129,7 @@ def parse_args():
     parser.add_argument('-t', '--use-tab', action='store_true',
                         help='indent by tab')
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s 1.4.1')
+                        version='%(prog)s 1.5.0')
     parser.add_argument('-w', '--word-size', metavar='word size', nargs='?',
                         type=int, const=1, default=1, help='input word size')
 
