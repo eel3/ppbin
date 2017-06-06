@@ -2,7 +2,7 @@
 # encoding: utf-8
 # -*- coding: utf-8 -*-
 # vim:fileencoding=UTF-8
-# @(#) Command line tool to pretty-print binary file. Version 1.5.1.20170217
+# @(#) Command line tool to pretty-print binary file. Version 1.5.2.20170606
 
 # Copyright (c) 2016 eel3
 #
@@ -28,6 +28,7 @@
 from __future__ import print_function
 
 import argparse
+import functools
 import struct
 import sys
 
@@ -69,9 +70,7 @@ def ppbin(istream, ostream, opts):
     if opts.begin_of_file is not None:
         ostream.write(opts.begin_of_file + '\n')
 
-    binaries = istream.read()
-    it = (binaries[i:i+word_size] for i in range(0, len(binaries), word_size))
-    for word in it:
+    for word in iter(functools.partial(istream.read, word_size), ''):
         if len(word) < word_size:
             raise ValueError('file size is indivisible by --word-size')
         if opts.little_endian:

@@ -18,7 +18,7 @@ ppbin is Python 2.7 script, and so probably works fine on other OS.
 Set up
 ------
 
-1. Install Python 2.7.12 or later.
+1. Install Python 2.7.13 or later.
 2. Put ppbin in a directory registered in PATH.
 
 Usage
