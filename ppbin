@@ -128,7 +128,7 @@ def parse_args():
     parser.add_argument('-t', '--use-tab', action='store_true',
                         help='indent by tab')
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s 1.5.1')
+                        version='%(prog)s 1.5.2')
     parser.add_argument('-w', '--word-size', metavar='word size', nargs='?',
                         type=int, const=1, default=1, help='input word size')
 
