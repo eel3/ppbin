@@ -2,7 +2,7 @@
 # encoding: utf-8
 # -*- coding: utf-8 -*-
 # vim:fileencoding=UTF-8
-# @(#) Command line tool to pretty-print binary file. Version 1.5.4.20190227
+# @(#) Command line tool to pretty-print binary file. Version 1.5.4.20190228
 
 # Copyright (c) 2016 eel3
 #
@@ -110,7 +110,7 @@ def simplify_options(opts, as_list=[]):
         else:
             return attr[0]
 
-    attrs = {name: simplify_attr(name) for name in filter(public_attr, dir(opts))}
+    attrs = {name: simplify_attr(name) for name in dir(opts) if public_attr(name)}
     Options = collections.namedtuple('Options', list(attrs.keys()))
     return Options(**attrs)
 
