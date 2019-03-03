@@ -30,7 +30,6 @@ from __future__ import print_function
 import argparse
 import collections
 import functools
-import re
 import struct
 import sys
 
@@ -94,7 +93,7 @@ def ppbin(istream, ostream, opts):
 
 def simplify_options(opts, as_list=[]):
     def ispublicattr(attr_name):
-        return re.match(r'^_', attr_name) is None
+        return attr_name and attr_name[0] != '_'
 
     def simplify_attr(attr_name):
         attr = getattr(opts, attr_name)
