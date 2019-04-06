@@ -11,7 +11,7 @@ zlib License.
 Target environments
 -------------------
 
-Windows, Cygwin, Linux, Mac OS X, FreeBSD.
+Windows, Cygwin, Linux, macOS, FreeBSD.
 
 ppbin is Python 3.6 script, and so probably works fine on other OS.
 
