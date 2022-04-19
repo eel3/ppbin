@@ -25,6 +25,9 @@
 #     3. This notice may not be removed or altered from any source
 #     distribution.
 
+"""Command line tool to pretty-print binary file.
+"""
+
 import argparse
 import collections
 import functools
@@ -33,23 +36,69 @@ import sys
 
 
 def eprint(*args, **keywords):
+    """Wrapper function of print() (for error messages).
+
+    Args:
+        *args (tuple): Variable length argument list.
+        **keywords (dict[str, Any]): Arbitrary keyword arguments.
+    """
     print(sys.argv[0] + ':', *args, file=sys.stderr, **keywords)
 
 
 def make_indent(indent_level, use_tab):
+    """Make indent string.
+
+    Args:
+        indent_level (int): Indent level.
+        use_tab (bool): Whether using tab character or not.
+
+    Returns:
+        str: Indent string.
+    """
     c = '\t' if use_tab else ' '
     return c * indent_level
 
 
 def format_pword(pword, print_fmt, unpack_fmt):
+    """Format print-word size binary data.
+
+    Args:
+        pword (bytes): Print-word size binary data.
+        print_fmt (str): Output format string.
+        unpack_fmt (str): Unpack format string.
+
+    Returns:
+        str: Formatted string.
+    """
     return print_fmt % struct.unpack(unpack_fmt, pword)
 
 
 def format_word(wprefix, pwords, pdelim):
+    """Format word size data.
+
+    Args:
+        wprefix (str): Prefix string for each word size data.
+        pwords (list[str]): List of formatted print-word size data.
+        pdelim (str): Delimiter string for each print-word size data.
+
+    Returns:
+        str: Formatted string.
+    """
     return wprefix + pdelim.join(pwords)
 
 
 def format_line(indent, words, wdelim, rtrim):
+    """Format 1 line data.
+
+    Args:
+        indent (str): Indent string.
+        words (list[str]): List of formatted word size data.
+        wdelim (str): Delimiter string for each word size data.
+        rtrim (bool): Whether remove whitespace from the right end or not.
+
+    Returns:
+        str: Formatted string.
+    """
     line = ''.join((indent, wdelim.join(words), wdelim))
     if rtrim:
         line = line.rstrip()
@@ -57,6 +106,13 @@ def format_line(indent, words, wdelim, rtrim):
 
 
 def ppbin(istream, ostream, opts):
+    """Pretty-print binary data.
+
+    Args:
+        istream (BinaryIO): Input binary IO stream.
+        ostream (TextIO): Output text IO stream.
+        opts (Self@Options): Option parameters.
+    """
     word_size = opts.word_size
     pwsize = opts.print_size
     pwords = []
@@ -90,10 +146,35 @@ def ppbin(istream, ostream, opts):
 
 
 def simplify_options(opts, as_list=[]):
+    """Simplify option parameters.
+
+    Args:
+        opts (argparse.Namespace): Option parameters.
+        as_list (list[str]): Attributes that treat as list.
+
+    Returns:
+        Self@Options: Simplified option parameters.
+    """
     def ispublicattr(attr_name):
+        """Check whether attribute is public or not.
+
+        Args:
+            attr_name (str): Attribute name.
+
+        Returns:
+            bool: True if attribute is public.
+        """
         return attr_name and attr_name[0] != '_'
 
     def simplify_attr(attr_name):
+        """Simplify attribute value.
+
+        Args:
+            attr_name (str): Attribute name.
+
+        Returns:
+            Any: Simplified attribute value.
+        """
         attr = getattr(opts, attr_name)
 
         if not isinstance(attr, list):
@@ -113,6 +194,11 @@ def simplify_options(opts, as_list=[]):
 
 
 def parse_args():
+    """Parse CLI arguments.
+
+    Returns:
+        tuple[Self@Options, list[str]]: Results of argument parsing.
+    """
     parser = argparse.ArgumentParser(description=
             'Command line tool to pretty-print binary file.')
 
@@ -162,6 +248,8 @@ def parse_args():
 
 
 def main():
+    """Main routine function.
+    """
     args = parse_args()
 
     if args[0].indent_level < 0:
