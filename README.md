@@ -13,12 +13,12 @@ Target environments
 
 Windows, Cygwin, Linux, macOS, FreeBSD.
 
-ppbin is Python 3.6 script, and so probably works fine on other OS.
+ppbin is Python 3.8 script, and so probably works fine on other OS.
 
 Set up
 ------
 
-1. Install Python 3.6.8 or later.
+1. Install Python 3.8.10 or later.
 2. Put ppbin in a directory registered in PATH.
 
 Usage

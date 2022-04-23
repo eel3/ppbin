@@ -2,7 +2,7 @@
 # encoding: utf-8
 # -*- coding: utf-8-unix -*-
 # vim:fileencoding=utf-8:ff=unix
-# @(#) Command line tool to pretty-print binary file. Version 2.0.0.20190307
+# @(#) Command line tool to pretty-print binary file. Version 2.0.1.20220420
 
 # Copyright (c) 2016 eel3
 #
@@ -28,6 +28,8 @@
 """Command line tool to pretty-print binary file.
 """
 
+from __future__ import annotations
+
 import argparse
 import collections
 import functools
@@ -35,10 +37,15 @@ import os
 import struct
 import sys
 
-progname = os.path.basename(sys.argv[0])
+from typing import Any, BinaryIO, Final, NoReturn, TextIO, TypeVar
+
+# XXX: Find a good way of type hinting for namedtuple.
+Options = TypeVar('Options')
+
+progname: Final[str] = os.path.basename(sys.argv[0])
 
 
-def eprint(*args, **keywords):
+def eprint(*args: Any, **keywords: Any) -> None:
     """Wrapper function of print() (for error messages).
 
     Args:
@@ -48,7 +55,7 @@ def eprint(*args, **keywords):
     print(progname + ':', *args, file=sys.stderr, **keywords)
 
 
-def make_indent(indent_level, use_tab):
+def make_indent(indent_level: int, use_tab: bool) -> str:
     """Make indent string.
 
     Args:
@@ -62,7 +69,7 @@ def make_indent(indent_level, use_tab):
     return c * indent_level
 
 
-def format_pword(pword, print_fmt, unpack_fmt):
+def format_pword(pword: bytes, print_fmt: str, unpack_fmt: str) -> str:
     """Format print-word size binary data.
 
     Args:
@@ -76,7 +83,7 @@ def format_pword(pword, print_fmt, unpack_fmt):
     return print_fmt % struct.unpack(unpack_fmt, pword)
 
 
-def format_word(wprefix, pwords, pdelim):
+def format_word(wprefix: str, pwords: list[str], pdelim: str) -> str:
     """Format word size data.
 
     Args:
@@ -90,7 +97,10 @@ def format_word(wprefix, pwords, pdelim):
     return wprefix + pdelim.join(pwords)
 
 
-def format_line(indent, words, wdelim, rtrim):
+def format_line(indent: str,
+                words: list[str],
+                wdelim: str,
+                rtrim: bool) -> str:
     """Format 1 line data.
 
     Args:
@@ -108,7 +118,7 @@ def format_line(indent, words, wdelim, rtrim):
     return line + '\n'
 
 
-def ppbin(istream, ostream, opts):
+def ppbin(istream: BinaryIO, ostream: TextIO, opts: Options) -> None:
     """Pretty-print binary data.
 
     Args:
@@ -148,7 +158,8 @@ def ppbin(istream, ostream, opts):
         ostream.write(opts.end_of_file + '\n')
 
 
-def simplify_options(opts, as_list=[]):
+def simplify_options(opts: argparse.Namespace,
+                     as_list: list[str]=[]) -> Options:
     """Simplify option parameters.
 
     Args:
@@ -158,7 +169,7 @@ def simplify_options(opts, as_list=[]):
     Returns:
         Self@Options: Simplified option parameters.
     """
-    def ispublicattr(attr_name):
+    def ispublicattr(attr_name: str) -> bool:
         """Check whether attribute is public or not.
 
         Args:
@@ -169,7 +180,7 @@ def simplify_options(opts, as_list=[]):
         """
         return attr_name and attr_name[0] != '_'
 
-    def simplify_attr(attr_name):
+    def simplify_attr(attr_name: str) -> Any:
         """Simplify attribute value.
 
         Args:
@@ -196,7 +207,7 @@ def simplify_options(opts, as_list=[]):
     return Options(**attrs)
 
 
-def parse_args():
+def parse_args() -> tuple[Options, list[str]]:
     """Parse CLI arguments.
 
     Returns:
@@ -236,7 +247,7 @@ def parse_args():
     parser.add_argument('-t', '--use-tab', action='store_true',
                         help='indent by tab')
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s 2.0.0')
+                        version='%(prog)s 2.0.1')
     parser.add_argument('-w', '--word-size', metavar='word size', nargs=1,
                         type=int, default=[1], help='input word size')
 
@@ -250,7 +261,7 @@ def parse_args():
     return simplify_options(args[0], ['files']), args[1]
 
 
-def main():
+def main() -> NoReturn:
     """Main routine function.
     """
     args = parse_args()
