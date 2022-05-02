@@ -2,7 +2,7 @@
 # encoding: utf-8
 # -*- coding: utf-8-unix -*-
 # vim:fileencoding=utf-8:ff=unix
-# @(#) Command line tool to pretty-print binary file. Version 2.0.1.20220420
+# @(#) Command line tool to pretty-print binary file. Version 2.0.2.20220502
 
 # Copyright (c) 2016 eel3
 #
@@ -37,12 +37,31 @@ import os
 import struct
 import sys
 
-from typing import Any, BinaryIO, Final, NoReturn, TextIO, TypeVar
-
-# XXX: Find a good way of type hinting for namedtuple.
-Options = TypeVar('Options')
+from dataclasses import dataclass
+from typing import Any, BinaryIO, Final, NoReturn, Optional, TextIO, TypeVar
 
 progname: Final[str] = os.path.basename(sys.argv[0])
+
+
+@dataclass
+class Options:
+    """Data class for Option parameters.
+    """
+    add_prefix: str
+    begin_of_file: Optional[str]
+    delim: str
+    end_of_file: Optional[str]
+    files: list[str]
+    indent_level: int
+    little_endian: bool
+    num_words_in_line: int
+    output: TextIO
+    print_size: Optional[int]
+    rtrim: bool
+    use_tab: bool
+    word_delim: Optional[str]
+    word_prefix: str
+    word_size: int
 
 
 def eprint(*args: Any, **keywords: Any) -> None:
@@ -124,7 +143,7 @@ def ppbin(istream: BinaryIO, ostream: TextIO, opts: Options) -> None:
     Args:
         istream (BinaryIO): Input binary IO stream.
         ostream (TextIO): Output text IO stream.
-        opts (Self@Options): Option parameters.
+        opts (Options): Option parameters.
     """
     word_size = opts.word_size
     pwsize = opts.print_size
@@ -167,7 +186,7 @@ def simplify_options(opts: argparse.Namespace,
         as_list (list[str]): Attributes that treat as list.
 
     Returns:
-        Self@Options: Simplified option parameters.
+        Options: Simplified option parameters.
     """
     def ispublicattr(attr_name: str) -> bool:
         """Check whether attribute is public or not.
@@ -203,7 +222,6 @@ def simplify_options(opts: argparse.Namespace,
             return attr[0]
 
     attrs = {name: simplify_attr(name) for name in dir(opts) if ispublicattr(name)}
-    Options = collections.namedtuple('Options', list(attrs.keys()))
     return Options(**attrs)
 
 
@@ -211,7 +229,7 @@ def parse_args() -> tuple[Options, list[str]]:
     """Parse CLI arguments.
 
     Returns:
-        tuple[Self@Options, list[str]]: Results of argument parsing.
+        tuple[Options, list[str]]: Results of argument parsing.
     """
     parser = argparse.ArgumentParser(description=
             'Command line tool to pretty-print binary file.')
@@ -247,7 +265,7 @@ def parse_args() -> tuple[Options, list[str]]:
     parser.add_argument('-t', '--use-tab', action='store_true',
                         help='indent by tab')
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s 2.0.1')
+                        version='%(prog)s 2.0.2')
     parser.add_argument('-w', '--word-size', metavar='word size', nargs=1,
                         type=int, default=[1], help='input word size')
 
