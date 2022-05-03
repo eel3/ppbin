@@ -56,10 +56,10 @@ class Options:
     little_endian: bool
     num_words_in_line: int
     output: TextIO
-    print_size: Optional[int]
+    print_size: int
     rtrim: bool
     use_tab: bool
-    word_delim: Optional[str]
+    word_delim: str
     word_prefix: str
     word_size: int
 
